@@ -65,7 +65,7 @@ export default function UploadPage() {
     formData.append("category", form.category === "others" ? form.otherCategory : form.category);
     formData.append("file", form.file);
 
-    await axios.post("/api/upload", formData, {
+    await axios.post("https://meme-templates-lemon.vercel.app/api/upload", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
     alert("submitted succesfully")
