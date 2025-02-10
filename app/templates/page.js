@@ -82,22 +82,22 @@ export default function MediaGallery() {
     <div className="p-6 max-w-3xl mx-auto">
       <h2 className="text-xl font-bold mb-4">Media Gallery</h2>
 
-      <div className="flex gap-4 mb-4">
-        <select name="movieName" onChange={handleFilterChange} className="p-2 border rounded">
+      <div className="flex flex-wrap gap-4 mb-4">
+        <select name="movieName" onChange={handleFilterChange} className="p-1 border rounded">
           <option value="">All Movies</option>
           {Array.from(new Set(mediaData.map((item) => item.movieName))).map((movie) => (
             <option key={movie} value={movie}>{movie}</option>
           ))}
         </select>
 
-        <select name="heroName" onChange={handleFilterChange} className="p-2 border rounded">
+        <select name="heroName" onChange={handleFilterChange} className="p-1 border rounded">
           <option value="">All Heroes</option>
           {Array.from(new Set(mediaData.map((item) => item.heroName))).map((hero) => (
             <option key={hero} value={hero}>{hero}</option>
           ))}
         </select>
 
-        <select name="category" onChange={handleFilterChange} className="p-2 border rounded">
+        <select name="category" onChange={handleFilterChange} className="p-1 border rounded">
           <option value="">All Categories</option>
           {Array.from(new Set(mediaData.map((item) => item.category))).map((category) => (
             <option key={category} value={category}>{category}</option>
@@ -118,19 +118,21 @@ export default function MediaGallery() {
         <p className="text-gray-500 text-center">No Templates found.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {console.log(filteredMedia)}
           {filteredMedia.map((item, index) => (
+            
             <div key={index} className="border p-2 rounded shadow-md">
-              {item.filePath.endsWith(".mp4") ? (
+              {item.filePath && item.filePath.endsWith(".mp4") ? (
                 <video controls className="w-full">
                   <source src={item.filePath} type="video/mp4" />
                 </video>
-              ) : item.filePath.endsWith(".mp3") ? (
+              ) : item.filePath && item.filePath.endsWith(".mp3") ? (
                 <audio controls className="w-full">
                   <source src={item.filePath} type="audio/mp3" />
                 </audio>
               ) : (
                 <img
-                  src={item.filePath}
+                  src={item.imageUrl}
                   alt="Uploaded Media"
                   className="w-full h-48 object-cover"
                 />

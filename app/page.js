@@ -6,20 +6,20 @@ import axios from "axios";
 export default function UploadPage() {
 
   const [openForm, setOpenForm] = useState(false);
-  const [mediaData, setMediaData] = useState([]);
-  useEffect(() => {
-    const fetchMedia = async () => {
-      try {
-        const res = await axios.get("/api/media");
-        // console.log("Fetched media data:", res.data); // ✅ Ensure this logs correct data
-        setMediaData(res.data || []);
-      } catch (error) {
-        console.error("Error fetching media:", error);
-      }
-    };
+  // const [mediaData, setMediaData] = useState([]);
+  // useEffect(() => {
+  //   const fetchMedia = async () => {
+  //     try {
+  //       const res = await axios.get("/api/media");
+  //       // console.log("Fetched media data:", res.data); // ✅ Ensure this logs correct data
+  //       setMediaData(res.data || []);
+  //     } catch (error) {
+  //       console.error("Error fetching media:", error);
+  //     }
+  //   };
 
-    fetchMedia();
-  }, []);
+  //   fetchMedia();
+  // }, []);
   // console.log("media data is the ", mediaData)
   const [form, setForm] = useState({
     movieName: "",
@@ -65,7 +65,7 @@ export default function UploadPage() {
     formData.append("category", form.category === "others" ? form.otherCategory : form.category);
     formData.append("file", form.file);
 
-    await axios.post("https://meme-templates-lemon.vercel.app/api/upload", formData, {
+    await axios.post("/api/upload", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
     alert("submitted succesfully")
@@ -143,11 +143,11 @@ export default function UploadPage() {
         </div>
       }
       <div>
-        {mediaData.length > 0 ? (
-          <MediaGallery />
+        {/* {mediaData.length > 0 ? (
         ) : (
           <p className="text-center text-gray-500">No Templates Found</p>
-        )}
+          )} */}
+          <MediaGallery />
       </div>
     </>
   );
