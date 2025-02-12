@@ -13,13 +13,15 @@
     "aws-sdk": "^2.1692.0",
     "axios": "^1.7.9",
     "dotenv": "^16.4.7",
+    "formidable": "^3.5.2",
     "memetemplatestore": "file:",
     "mongoose": "^8.10.0",
     "multer": "^1.4.5-lts.1",
     "multer-s3": "^3.0.1",
     "next": "15.1.6",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "stream": "^0.0.3"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
