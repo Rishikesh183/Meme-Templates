@@ -1,7 +1,8 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
-import { v4 as uuidv4 } from "uuid"; // To generate unique filenames
+import { v4 as uuidv4 } from "uuid";
 
+// Use the service role key for both storage and database access on the server side
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -9,23 +10,28 @@ const supabase = createClient(
 
 export async function POST(req) {
   try {
-    const formData = await req.formData();
+    // Ensure the request is multipart form-data
+    if (!req.headers.get("content-type")?.includes("multipart/form-data")) {
+      return NextResponse.json({ error: "Invalid content type" }, { status: 400 });
+    }
 
+    const formData = await req.formData();
     const movieName = formData.get("movieName");
     const dialogue = formData.get("dialogue");
     const heroName = formData.get("heroName");
     const category = formData.get("category");
-    const file = formData.get("file"); // Get uploaded file
+    const file = formData.get("file");
 
     if (!file) {
       return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
     }
 
-    // Convert file to buffer for upload
-    const fileBuffer = await file.arrayBuffer();
+    // Convert file to buffer
+    const fileArrayBuffer = await file.arrayBuffer(); // Returns an ArrayBuffer
+    const fileBuffer = Buffer.from(fileArrayBuffer);  // Convert to Buffer
     const fileName = `${uuidv4()}-${file.name}`;
 
-    // Upload file to Supabase storage
+    // Upload file to Supabase Storage
     const { data: uploadData, error: uploadError } = await supabase.storage
       .from("media-uploads") // Use correct bucket name
       .upload(fileName, fileBuffer, {
@@ -37,13 +43,19 @@ export async function POST(req) {
       return NextResponse.json({ error: uploadError.message }, { status: 500 });
     }
 
-    // Get the public URL of the uploaded file
-    const { data: publicUrlData } = supabase.storage.from("media-uploads").getPublicUrl(fileName);
-    // console.log("public url data is",publicUrlData)
+    // Get public URL and check for errors
+    const { data: publicUrlData, error: urlError } = supabase.storage
+      .from("media-uploads")
+      .getPublicUrl(fileName);
+
+    if (urlError) {
+      console.error("Error fetching public URL:", urlError);
+      return NextResponse.json({ error: urlError.message }, { status: 500 });
+    }
+
     const imageUrl = publicUrlData.publicUrl;
 
-
-    // Store metadata in the 'media' table
+    // Insert metadata into Supabase database
     const { data, error } = await supabase.from("media").insert([
       { movieName, dialogue, heroName, category, imageUrl }
     ]);
