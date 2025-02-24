@@ -2,14 +2,14 @@ import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 
-// Use the service role key for both storage and database access on the server side
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
-
 export async function POST(req) {
   try {
+    // Initialize Supabase client inside the function
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL || "",
+      process.env.SUPABASE_SERVICE_ROLE_KEY || ""
+    );
+
     // Ensure the request is multipart form-data
     if (!req.headers.get("content-type")?.includes("multipart/form-data")) {
       return NextResponse.json({ error: "Invalid content type" }, { status: 400 });
